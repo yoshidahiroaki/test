@@ -12,6 +12,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 body {
@@ -21,16 +22,15 @@ body {
 main {
   margin: 0 auto;
   max-width: 100%;
-  padding: 20px;
-  width: 1200px;
+  padding: 0px;
+  width: 600px;
+  height: 100%;
 }
 
-label,
-input,
 button {
   display: block;
   font-size: 16px;
-  margin: 0 0 8px 0;
+  margin: 0 0 0 0;
   width: 100%;
 }
 
@@ -42,15 +42,85 @@ form {
 }
 
 button {
-  background: transparent;
-  border: 1px solid #444;
+  background: #444;
+  color: #fff;
+  border: 1px solid #333;
   border-radius: 4px;
   cursor: pointer;
   margin: 0;
   padding: 4px 0;
+  height: 45px;
 }
 
 button:hover {
-  background: #444;
-  color: #fff;
+  background: transparent;
+  color: #444;
+}
+
+.hide{
+  display: none;
+}
+#toolbar{
+  font-size: 0;
+}
+#toolbar button{
+  display: inline-block;
+  background: #777;
+  width: 25%;
+  font-size: 16px;
+}
+
+#content{
+  height: 100%;
+}
+
+#learning{
+  height: calc(100% - 90px);
+}
+
+#message{
+  color: lightseagreen;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+#message.emsg{
+  color:red; 
+}
+.description{
+  display: inline-block;
+  width: 50px;
+}
+label{
+  display: inline-block;
+  width: 70px;
+  vertical-align: bottom;
+}
+input + span {
+  display: inline-block;
+  vertical-align: bottom;
+  height: 48px;
+  width: 100%;
+  color: white;
+  background: cornflowerblue;
+  border: 1px solid blue;
+}
+input:checked + span{
+  color: #777;
+  background: white;
+  border: 1px solid #777;
+}
+label>input{
+  display: none;
+}
+input{
+  display: inline-block;
+  width: 70%;
+  border: none;
+  border-bottom: 1px solid cadetblue;
+  font-size: 32px;
+}
+
+.wordline{
+  padding: 10px 0;
 }
