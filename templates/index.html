@@ -1,7 +1,39 @@
 {% extends "layout.html" %}
 
 {% block body %}
-  <h1>Hellow World</h1>
-  <h2>My Test App Done!</h2>
-  <h3>Let's share your achievement with your friends!!</h3>
+<div id="login">
+  <p>Login</p>
+  <input id="auth_password" type="password" />
+  <button id="auth_btn">login</button>
+</div>
+<div id="content" class="hide">
+  <div id="toolbar">
+    <button id="logout">logout</button>
+    <button id="delete">delete</button>
+    <button id="update">update</button>
+    <button id="create">create</button>
+  </div>
+  <div id="learning">
+    <span id="message"></span>
+    <div class="wordline">
+      <span class="description">en</span>
+      <input id="en" type="text" />
+      <label id="for_en" class="visual">
+        <input type="checkbox">
+        <span></span>
+      </label>
+    </div>
+    <div class="wordline">
+      <span class="description">ja</span>
+      <input id="ja" type="text" />
+      <label id="for_ja" class="visual">
+        <input type="checkbox">
+        <span></span>
+      </label>
+    </div>
+    <div class="wordline"><span class="description">note</span><input id="note" type="text" /></div>
+    <div class="wordline"><span class="description">remembered!('ω')</span><input id="remember" type="checkbox" /></div>
+  </div>
+  <button id="next">next</button>
+</div>
 {% endblock %}
