@@ -87,13 +87,13 @@ button:hover {
 #message.emsg{
   color:red; 
 }
-.description{
+.description{  
   display: inline-block;
-  width: 50px;
+  width: 10%;
 }
 label{
   display: inline-block;
-  width: 70px;
+  width: 20%;
   vertical-align: bottom;
 }
 input + span {
