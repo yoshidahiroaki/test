@@ -1,0 +1,255 @@
+<html>
+<head>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+<script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<style>
+  ul {
+    list-style: none;
+  }
+  li {
+    display: inline-block;
+    width: 35px;
+    height: 30px;
+  }
+  input{
+    width: 35px;
+  }
+
+
+  /* body {
+      background-color: #00ff00
+  } */
+</style>
+</head>
+<body>
+  <!-- <button id="testbutton">testbutton</button> -->
+  
+  <div style="width: 100%; height: 100%;">
+    
+    <div style="width: 30%; height: 100%; display: inline-block;">
+      <div>
+        <p>関数１</p>
+        <ul id="aul">
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+        </ul>
+        <div id="func1" class="ct-chart ct-perfect-fourth graph"></div>
+      </div>
+      <div>
+        <p>関数2</p>
+        <ul id="bul">
+          <li><input type="number" value="10"></li>
+          <li><input type="number" value="5"></li>
+          <li><input type="number" value="3.3"></li>
+          <li><input type="number" value="2.5"></li>
+          <li><input type="number" value="2"></li>
+          <li><input type="number" value="1.2"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+          <li><input type="number" value="1"></li>
+        </ul>
+        <div id="func2" class="ct-chart ct-perfect-fourth graph"></div>
+      </div>
+      
+    </div>
+    <div style="width: 65%; height: 100%; display: inline-block;vertical-align: top;">
+      <p>相関関数</p>
+      <div id="relationfunc" class="ct-chart ct-perfect-fourth graph"></div>
+    </div>
+    <!-- <div style="width: 35%; height: 100%; display: inline-block;vertical-align: top;">
+      <p>相関関数　※但し、面積で正規化</p>
+      <div id="relationfunc_n" class="ct-chart ct-perfect-fourth graph"></div>
+    </div> -->
+  </div>
+  
+<script type="text/javascript">
+  function normalization(list){
+    // let max = list.reduce((a,b)=>Math.max(a,b))
+    let sum = list.reduce((a,x)=>a+=x,0);
+    if(sum <= 0){
+      sum = 1
+    }
+    return list.map(function(element) {
+        return element / sum;
+    });
+  }
+  function relationdata(alist, blist, nflg){
+    let n_alist = nflg ? normalization(alist) : alist
+    let n_blist = nflg ? normalization(blist) : blist
+
+    datas = []
+    dummy = []
+    domainlen = alist.length + blist.length -1
+    for(let i=0; i < domainlen; i++){
+      let a_start = i + alist.length - domainlen
+      if(a_start < 0){
+        a_start = 0
+      }
+
+      let a_end = i + 1
+      if(a_end > alist.length){
+        a_end = alist.length
+      }
+
+      let b_start = - i + blist.length - 1
+      if(b_start < 0){
+        b_start = 0
+      }
+
+      let b_end = domainlen - i
+      if(b_end){
+        b_end = blist.length
+      }
+
+      aslice = n_alist.slice(a_start, a_end)
+      bslice = n_blist.slice(b_start, b_end)
+
+      let sum = 0.0
+      for(let j=0;j<aslice.length;j++){
+        sum += aslice[j] * bslice[j]
+      }
+      datas.push(sum)
+      dummy.push(1)
+    }
+    lbls = []
+    for(let i= 1 - blist.length; i < alist.length; i++){
+      lbls.push(i)
+    }
+    if(nflg){
+      return {
+        labels:lbls,
+        series:[
+          datas
+          ,dummy
+        ]
+      }
+    }else{
+      return {
+        labels:lbls,
+        series:[
+          datas
+          //,dummy
+        ]
+      }
+    }
+    
+  }
+  function getul(id){
+    let res = []
+    $("#"+id+">li>input").each(function(i,value){
+      res.push($(value).val())
+    })
+    return res
+  }
+  //let al = [3,6,9,7]
+  let al = getul("aul")
+  //let bl = [1,2,5]
+  let bl = getul("bul")
+  let a_data = {
+    labels:[0,1,2,3,4,5,6,7,8,9],
+    series:[al]
+  }
+  let b_data = {
+    labels:[0,1,2,3,4,5,6,7,8,9],
+    series:[bl]
+  }
+  let r_data = relationdata(bl,al, false)
+  //let rn_data = relationdata(bl,al, true)
+  let option = {
+    low: 0,
+    showArea: true,
+    showPoint: false,
+    fullWidth: false
+  }
+  var a_chart = new Chartist.Line('#func1',a_data, option);
+  var b_chart = new Chartist.Line('#func2',b_data, option);
+  var r_chart = new Chartist.Line('#relationfunc',r_data, option);
+  //var rn_chart = new Chartist.Line('#relationfunc_n',rn_data, option);
+
+  a_chart.on('draw', function(data) {
+    if(data.type === 'line' || data.type === 'area') {
+        data.element.animate({
+          d: {
+            begin: 0,// * data.index,
+            dur: 1000,
+            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+            to: data.path.clone().stringify(),
+            easing: Chartist.Svg.Easing.easeOutQuint
+          }
+        });
+      }
+    });
+  b_chart.on('draw', function(data) {
+    if(data.type === 'line' || data.type === 'area') {
+        data.element.animate({
+          d: {
+            begin: 0,// * data.index,
+            dur: 1000,
+            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+            to: data.path.clone().stringify(),
+            easing: Chartist.Svg.Easing.easeOutQuint
+          }
+        });
+      }
+    });
+  r_chart.on('draw', function(data) {
+    if(data.type === 'line' || data.type === 'area') {
+        data.element.animate({
+          d: {
+            begin: 0,// * data.index,
+            dur: 1000,
+            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+            to: data.path.clone().stringify(),
+            easing: Chartist.Svg.Easing.easeOutQuint
+          }
+        });
+      }
+    });
+  
+  $("#testbutton").click(function(){
+    c_data =  {
+      labels: ['-1','0', '1', '2', '3', '4', '5', '6', '7', '8'],
+      series: [
+        [3, 1, 4, 5, 7, 5, 2, 1, 3, 5]
+      ]
+    }
+    a_chart.update(c_data)
+  })
+
+  $("#aul>li>input").change(function() {
+    al = getul("aul")
+    let tr_data = relationdata(bl,al, false)
+    //let trn_data = relationdata(bl,al, true)
+    a_chart.update({
+      labels:[0,1,2,3,4,5,6,7,8,9],
+      series:[al]
+    })
+    r_chart.update(tr_data)
+    //rn_chart.update(trn_data)
+  });
+  $("#bul>li>input").change(function() {
+    bl = getul("bul")
+    let tr_data = relationdata(bl,al, false)
+    //let trn_data = relationdata(bl,al, true)
+    b_chart.update({
+      labels:[0,1,2,3,4,5,6,7,8,9],
+      series:[bl]
+    })
+    r_chart.update(tr_data)
+    //rn_chart.update(trn_data)
+  });
+</script>
+
+</body>
+</html>
+
